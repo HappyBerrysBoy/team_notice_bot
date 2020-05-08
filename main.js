@@ -14,22 +14,88 @@ bot.on("message", (msg) => {
 bot.onText(/\/start/, (msg, match) => {
   const chatId = msg.chat.id;
 
+  // bot.sendMessage(chatId, "사번을 입력하세요");
+
   const opts = {
     reply_markup: {
-      inline_keyboard: [
+      text: "출근처리",
+      callback_data: "gotowork",
+    },
+  };
+
+  bot.sendMessage(chatId, "사번을 입력하세요", opts);
+});
+
+bot.onText(/\/t/, (msg, match) => {
+  const chatId = msg.chat.id;
+
+  const opts = {
+    reply_markup: {
+      input_message_content: [
         [
           {
-            text: "Edit Text",
-            // we shall check for this value when we listen
-            // for "callback_query"
-            callback_data: "edit",
+            text: "출근처리",
+            callback_data: "gotowork",
+          },
+          {
+            text: "외근",
+            callback_data: "outWork",
+          },
+          {
+            text: "출장",
+            callback_data: "businessTrip",
+          },
+          {
+            text: "재택",
+            callback_data: "workInHouse",
           },
         ],
       ],
     },
   };
 
-  bot.sendMessage(chatId, "Original Text", opts);
+  bot.sendMessage(chatId, "test1", opts);
+});
+
+bot.onText(/\/출근/, (msg, match) => {
+  const chatId = msg.btnchat.id;
+
+  const opts = {
+    reply_markup: {
+      inline_keyboard: [
+        [
+          {
+            text: "출근처리",
+            callback_data: "gotowork",
+          },
+          {
+            text: "외근",
+            callback_data: "outWork",
+          },
+          {
+            text: "출장",
+            callback_data: "businessTrip",
+          },
+          {
+            text: "재택",
+            callback_data: "workInHouse",
+          },
+        ],
+        [
+          {
+            text: "연차",
+            callback_data: "off",
+          },
+          {
+            text: "교육",
+            callback_data: "study",
+          },
+        ],
+      ],
+    },
+  };
+
+  bot.sendMessage(chatId, "근태관리", opts);
 });
 
 // Handle callback queries
@@ -42,35 +108,33 @@ bot.on("callback_query", function onCallbackQuery(callbackQuery) {
   };
   let text;
 
-  if (action === "edit") {
-    text = "Edited Text";
-
-    bot.sendMessage(msg.chat.id, "clicked edited text");
+  if (action === "gotowork") {
+    text = "오늘도 즐거운 하루!";
+  } else if (action === "outWork") {
+    text = "고생하세요!!";
+  } else if (action === "businessTrip") {
+    text = "차조심!!";
+  } else if (action === "workInHouse") {
+    text = "밥잘챙겨드세요!!";
+  } else if (action === "off") {
+    text = "즐거운시간 보내세요!!";
+  } else if (action === "study") {
+    text = "열공하세요!!";
   }
 
   bot.editMessageText(text, opts);
 });
 
-bot.onText(/\/love/, function onLoveText(msg) {
+bot.onText(/\/btn/, function onLoveText(msg) {
   const opts = {
     reply_to_message_id: msg.message_id,
-    reply_markup: JSON.stringify({
-      keyboard: [
-        ["Yes, you are the bot of my life ❤"],
-        ["No, sorry there is another one..."],
-      ],
-    }),
+    reply_markup: {
+      resize_keyboard: true,
+      one_time_keyboard: true,
+      keyboard: [["yes"], ["no"]],
+    },
   };
-  bot.sendMessage(msg.chat.id, "Do you love me?", opts);
-});
-
-// Matches /photo
-bot.onText(/\/photo/, function onPhotoText(msg) {
-  // From file path
-  const photo = `${__dirname}/../test/data/photo.gif`;
-  bot.sendPhoto(msg.chat.id, photo, {
-    caption: "I'm a bot!",
-  });
+  bot.sendMessage(msg.chat.id, "Click Button", opts);
 });
 
 // Matches /audio
